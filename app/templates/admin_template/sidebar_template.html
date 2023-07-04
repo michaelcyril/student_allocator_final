@@ -3,7 +3,7 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="{% url 'app:admin_home' %}" class="brand-link">
-        <img src="{% static 'dist/img/abc.png' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+        <img src="{% static 'dist/img/images.jpg' %}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
             style="opacity: .8">
         <span class="brand-text font-weight-light"> <b>PSAS</b>  </span>
       </a>
@@ -13,7 +13,7 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="info">
-            <a href="{% url 'app:admin_profile' %}" class="d-block">Admin Panel</a>
+            <a href="#" class="d-block">TAMISEMI Panel</a>
           </div>
         </div>
 
@@ -45,16 +45,16 @@
             </li>
             
 
-            <li class="nav-item">
-              {% url 'app:manage_student' as manage_student %}
-              {% url 'app:admin_home' student_id=id as edit_student %}
-              <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %}">
-                <i class="nav-icon fas fa-user-graduate"></i>
-                <p>
-                  Student Allocations
-                </p>
-              </a>
-            </li>
+<!--            <li class="nav-item">-->
+<!--              {% url 'app:manage_student' as manage_student %}-->
+<!--              {% url 'app:admin_home' student_id=id as edit_student %}-->
+<!--              <a href="{{ manage_student }}" class="nav-link {% if request.path == manage_student %} active {% endif %} {% if request.path == edit_student %} active {% endif %}">-->
+<!--                <i class="nav-icon fas fa-user-graduate"></i>-->
+<!--                <p>-->
+<!--                  Student Allocations-->
+<!--                </p>-->
+<!--              </a>-->
+<!--            </li>-->
 
             <li class="nav-item">
               {% url 'app:all_regions_ad' as manage_course %}

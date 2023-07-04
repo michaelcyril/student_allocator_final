@@ -32,5 +32,9 @@ urlpatterns = [
     path('add_session/', views.add_session, name="add_session"),
     path('perform_selection/', views.Selection, name="perform_selection"),
 
-    path('demo', views.joke),
+    # path('adminLogin/', views.loginPage, name="login"),
+    path('necta_home/', views.necta_home, name="necta_home"),
+    path('allocate_students_necta/', views.insert_students_necta, name="allocate_students_necta"),
+
+    # path('demo', views.joke),
 ]

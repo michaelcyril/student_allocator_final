@@ -4,6 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
+    USER_TYPE = (('necta', 'necta'), ('admin', 'admin'))
+    type = models.CharField(max_length=20, choices=USER_TYPE)
     USERNAME_FIELD = "username"
 
     def __str__(self):

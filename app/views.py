@@ -49,6 +49,7 @@ def home(request):
 
     return render(request, "user_templates/student_home_template.html", context)
 
+
 def loginPage(request):
     return render(request, 'login.html')
 
@@ -57,15 +58,22 @@ def doLogin(request):
     if request.method != "POST":
         return HttpResponse("<h2>Method Not Allowed</h2>")
     else:
-        user = EmailBackEnd.authenticate(request, username=request.POST.get('email'), password=request.POST.get('password'))
+        user = EmailBackEnd.authenticate(request, username=request.POST.get('email'),
+                                         password=request.POST.get('password'))
         if user != None:
             login(request, user)
-            return redirect('app:admin_home')
-   
+            if user.type == "admin":
+                print('admin')
+                return redirect('app:admin_home')
+            elif user.type == "necta":
+                print('necta')
+                return redirect('app:necta_home')
+
         else:
             messages.error(request, "Invalid Login Credentials!")
-            #return HttpResponseRedirect("/")
+            # return HttpResponseRedirect("/")
             return redirect('app:login')
+
 
 # @login_required
 def admin_home(request):
@@ -89,20 +97,48 @@ def admin_home(request):
     else:
         return HttpResponse("Please Login First")
 
-        
+
+def necta_home(request):
+    print(request.user)
+    year = Year.objects.all()
+    x = [a.id for a in year]
+    current_year = max(x)
+    y = Year.objects.get(id=current_year)
+    total_student = Student.objects.filter(year=y)
+    total_schools = School.objects.all()
+    total_allocated = Student.objects.filter(Q(year=y) and Q(is_active=False))
+    total_unallocated = Student.objects.filter(Q(year=y) and Q(is_active=True))
+    context = {
+        'total_student': str(len(total_student)),
+        'total_schools': str(len(total_schools)),
+        'total_allocated': str(len(total_allocated)),
+        'total_unallocated': str(len(total_unallocated))
+    }
+    # context = {
+    #     'total_student': '200',
+    #     'total_schools': '200',
+    #     'total_allocated': '200',
+    #     'total_unallocated': '200'
+    # }
+    if request.user:
+        return render(request, "necta_template/home_content.html", context)
+    else:
+        return HttpResponse("Please Login First")
+
+
 def admin_profile(request):
     user = User.objects.get(id=request.user.id)
-    context={
+    context = {
         "user": user
     }
     return render(request, 'admin_template/admin_profile.html', context)
 
 
 def admin_profile_update(request):
-     if request.method != "POST":
+    if request.method != "POST":
         messages.error(request, "Invalid Method!")
         return redirect('app:admin_profile')
-     else:
+    else:
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
         password = request.POST.get('password')
@@ -119,8 +155,8 @@ def admin_profile_update(request):
         except:
             messages.error(request, "Failed to Update Profile")
             return redirect('app:admin_profile')
-    
-    
+
+
 def logout_user(request):
     logout(request)
     return HttpResponseRedirect('/')
@@ -139,22 +175,24 @@ def manage_session(request):
 
 
 def add_session(request):
-    if request.method=="POST":
+    if request.method == "POST":
         year = request.POST['year']
         yr = Year.objects.create(year=year)
         yr.save()
     return render(request, "admin_template/add_session_template.html")
 
+
 def checStudents_alloc(request):
     data = Student.objects.all()
     context = {
-       "allocated": True
+        "allocated": True
     }
     print(context)
     return HttpResponse(context)
 
+
 def allocationYears(request):
-    data  = Year.objects.all()
+    data = Year.objects.all()
     print(data)
     return HttpResponse(data)
 
@@ -164,8 +202,8 @@ def insert_students(request):
     year = Year.objects.values('year').all()
     context = {'years': year}
     if request.method != "POST":
-      return render(request, "admin_template/add_studntsToallocate_template.html", context)
-   
+        return render(request, "admin_template/add_studntsToallocate_template.html", context)
+
     else:
         # resultSheet = request.POST.get('resultSheet')
         yr = Year.objects.get(year=request.POST['year'])
@@ -179,7 +217,7 @@ def insert_students(request):
             s = 0
             for data1 in data_list:
                 # print('here1')
-        # This make sure that the id of kata is as we save in kata table
+                # This make sure that the id of kata is as we save in kata table
                 mkoa = Mkoa.objects.get(name=data1['mkoa'])
                 # print(mkoa.name)
                 w = Wilaya.objects.values('id', 'name').filter(mkoa_id=mkoa)
@@ -191,7 +229,7 @@ def insert_students(request):
                 # kt = [x for x in k if x['name'] == data['kata']]
                 # kata = Kata.objects.get(id=kt[0]['id'])
                 ##
-                s = s+1
+                s = s + 1
                 print(s)
                 print('here')
                 student = Student.objects.create(
@@ -219,10 +257,73 @@ def insert_students(request):
             return redirect('app:allocate_students')
 
 
+
+def insert_students_necta(request):
+    # pri
+    year = Year.objects.values('year').all()
+    context = {'years': year}
+    if request.method != "POST":
+        return render(request, "necta_template/add_studntsToallocate_template.html", context)
+
+    else:
+        # resultSheet = request.POST.get('resultSheet')
+        yr = Year.objects.get(year=request.POST['year'])
+        csv_file = request.FILES.get('csv_file')
+        try:
+            # print(resultSheet)
+            data = csv.DictReader(csv_file.read().decode('utf-8').splitlines())
+            data_list = [dict(row) for row in data]
+            # print(data_list[0])
+            # print(dict(data))
+            s = 0
+            for data1 in data_list:
+                # print('here1')
+                # This make sure that the id of kata is as we save in kata table
+                mkoa = Mkoa.objects.get(name=data1['mkoa'])
+                # print(mkoa.name)
+                w = Wilaya.objects.values('id', 'name').filter(mkoa_id=mkoa)
+                # print(w[0]['name'])
+                wl = [x for x in w if x['name'].replace("\n", " ") == data1['wilaya']]
+                # print(wl)
+                wilaya = Wilaya.objects.get(id=wl[0]['id'])
+                # k = Kata.objects.values('id', 'name').filter(wilaya_id=wilaya)
+                # kt = [x for x in k if x['name'] == data['kata']]
+                # kata = Kata.objects.get(id=kt[0]['id'])
+                ##
+                s = s + 1
+                print(s)
+                print('here')
+                student = Student.objects.create(
+                    candidate_name=data1['candidate_name'],
+                    candidate_number=data1['candidate_number'],
+                    sex=data1['sex'],
+                    kiswahili=data1['kiswahili'],
+                    english=data1['english'],
+                    maarifa=data1['maarifa'],
+                    hisabati=data1['hisabati'],
+                    science=data1['science'],
+                    average_grade=data1['average_grade'],
+                    average_marks=data1['average_marks'],
+                    wilaya_id=wilaya,
+                    # year=request.data['year']
+                    year=yr
+
+                )
+                student.save()
+            print('done')
+            messages.success(request, "resultSheet Successfully")
+            return redirect('app:allocate_students_necta')
+        except:
+            messages.error(request, "Failed to Upload")
+            return redirect('app:allocate_students_necta')
+
+
+
+
 def addSchool(request):
     if request.method != "POST":
-      return render(request, "admin_template/add_secSchool_template.html")
-   
+        return render(request, "admin_template/add_secSchool_template.html")
+
     else:
         resultSheet = request.POST.get('resultSheet')
         try:
@@ -232,8 +333,7 @@ def addSchool(request):
         except:
             messages.error(request, "Failed to Upload")
             return redirect('app:allocate_students')
-    
- 
+
 
 def manage_student(request):
     yr = Year.objects.all()
@@ -250,7 +350,8 @@ def manage_student(request):
         "students": students
     }
     return render(request, 'admin_template/manage_student_template.html', context)
-    
+
+
 def group_list(lst, group_lengths):
     result = []
     idx = 0
@@ -287,8 +388,8 @@ def specialSchool(year):
     special_quantity_f = [x['quantity_required'] for x in ssf_list]
     student_groups_f = group_list(students_fx, special_quantity_f)
     output_list_f = [{'id': d['id'], 'name': d['name'], 'sex': d['sex'],
-                    'type': d['type'], 'quantity_required': d['quantity_required'],
-                    'students': sub_list} for d, sub_list in zip(ssf_list, student_groups_f)]
+                      'type': d['type'], 'quantity_required': d['quantity_required'],
+                      'students': sub_list} for d, sub_list in zip(ssf_list, student_groups_f)]
     # This is to save the students to the special school
 
     for sch in output_list_f:
@@ -422,7 +523,7 @@ def technicalSchool(year):
 def wardSchool(year):
     wilaya = Wilaya.objects.values('id', 'name').all()
     w = [x for x in wilaya]
-    c=0
+    c = 0
     for i in w:
         wly = Wilaya.objects.get(id=i['id'])
         print(wly.id)
@@ -441,18 +542,19 @@ def wardSchool(year):
         sch_length = len(sch)
         stu_length = len(stu)
         print(type(stu_length))
-        c = c+stu_length
+        c = c + stu_length
         print(c)
-        div = stu_length/sch_length
+        div = stu_length / sch_length
         grouping_length = []
         for i in range(sch_length):
             grouping_length.append(math.floor(div))
         e = 0
         for v in grouping_length:
             e = e + v
-        grouping_length[sch_length-1] = grouping_length[sch_length-1] + stu_length - e
+        grouping_length[sch_length - 1] = grouping_length[sch_length - 1] + stu_length - e
         student_groups = group_list(stu, grouping_length)
-        output_list = [{'id': d['id'], 'name': d['name'], 'students': sub_list} for d, sub_list in zip(sch, student_groups)]
+        output_list = [{'id': d['id'], 'name': d['name'], 'students': sub_list} for d, sub_list in
+                       zip(sch, student_groups)]
 
         for i in output_list:
             # print('here')
@@ -465,7 +567,6 @@ def wardSchool(year):
                 student.save()
         # print(wly.mkoa_id.name+"----"+wly.name)
     # print('student length'+c)
-
 
 
 def Selection(request):
@@ -489,7 +590,6 @@ def Selection(request):
         print('ward school error')
     print('ward school done')
     return redirect('app:allocate_students')
-
 
 
 def InsertStudentView(request):

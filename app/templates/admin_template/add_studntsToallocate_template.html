@@ -20,62 +20,64 @@
                     </div>
                     <!-- /.card-header -->
                     <!-- form start -->
-                    <form role="form" enctype="multipart/form-data" method="POST">
-                        {% csrf_token %}
-                        
-                                {% comment %} Display Messages {% endcomment %}
-                                {% if messages %}
-                                <div class="form-group">
-                                <div class="col-12">
-                                    {% for message in messages %}
-                                    {% if message.tags == "error" %}
-                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% elif message.tags == "success" %}
-                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">
-                                        {{ message }}
-                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                        </div>
-                                    {% endif %}
-                                    {% endfor %}
-                                </div>
-                                </div>
-                                {% endif %}
-                            
+<!--                    <form role="form" enctype="multipart/form-data" method="POST">-->
+<!--                        {% csrf_token %}-->
+<!--                        -->
+<!--                                {% comment %} Display Messages {% endcomment %}-->
+<!--                                {% if messages %}-->
+<!--                                <div class="form-group">-->
+<!--                                <div class="col-12">-->
+<!--                                    {% for message in messages %}-->
+<!--                                    {% if message.tags == "error" %}-->
+<!--                                        <div class="alert alert-danger alert-dismissible fade show" role="alert" style="margin-top: 10px;">-->
+<!--                                        {{ message }}-->
+<!--                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--                                            <span aria-hidden="true">&times;</span>-->
+<!--                                        </button>-->
+<!--                                        </div>-->
+<!--                                    {% elif message.tags == "success" %}-->
+<!--                                        <div class="alert alert-success alert-dismissible fade show" role="alert" style="margin-top: 10px;">-->
+<!--                                        {{ message }}-->
+<!--                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">-->
+<!--                                            <span aria-hidden="true">&times;</span>-->
+<!--                                        </button>-->
+<!--                                        </div>-->
+<!--                                    {% endif %}-->
+<!--                                    {% endfor %}-->
+<!--                                </div>-->
+<!--                                </div>-->
+<!--                                {% endif %}-->
+<!--                            -->
 
-                        <div class="card-body">
+<!--                        <div class="card-body">-->
 
-                            <div class="m-1">
-                                <label>select year :</label>
-                                <select class="yearselect bg-primary" id="year" name="year">
-                                    {% for year in years %}
+<!--                            <div class="m-1">-->
+<!--                                <label>select year :</label>-->
+<!--                                <select class="yearselect bg-primary" id="year" name="year">-->
+<!--                                    {% for year in years %}-->
 
-                                <option selected value="{{year.year}}">{{year.year}}</option>
-                                    {% endfor %}
-                                <!--<option>2022</option>-->
-                                </select>
-                                <br/>
+<!--                                <option selected value="{{year.year}}">{{year.year}}</option>-->
+<!--                                    {% endfor %}-->
+<!--                                &lt;!&ndash;<option>2022</option>&ndash;&gt;-->
+<!--                                </select>-->
+<!--                                <br/>-->
 
-                                <label for="csv_file" class="form-label">result sheets</label>
-                                <input class="form-control form-control-lg " id="csv_file"  name="csv_file" type="file">
-                            </div>
-                            <div>
-                               
-                            </div>
+<!--                                <label for="csv_file" class="form-label">result sheets</label>-->
+<!--                                <input class="form-control form-control-lg " id="csv_file"  name="csv_file" type="file">-->
+<!--                            </div>-->
+<!--                            <div>-->
+<!--                               -->
+<!--                            </div>-->
 
-                        </div>
-                        <!-- /.card-body -->
+<!--                        </div>-->
+<!--                        &lt;!&ndash; /.card-body &ndash;&gt;-->
 
-                        <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">Add Students</button>
-                        </div>
-                    </form>
+<!--                        <div class="card-footer">-->
+<!--                        <button type="submit" class="btn btn-primary">Add Students</button>-->
+<!--                        </div>-->
+<!--                    </form>-->
+<!--                    -->
+<!--                    -->
                     </div>
                     <!-- /.card -->
 
