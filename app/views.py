@@ -47,7 +47,7 @@ def home(request):
         'total_unallocated': str(len(total_unallocated))
     }
 
-    return render(request, "user_templates/student_home_template.html", context)
+    return render(request, "user_templates/check_allocation.html", context)
 
 
 def loginPage(request):
@@ -84,13 +84,25 @@ def admin_home(request):
     y = Year.objects.get(id=current_year)
     total_student = Student.objects.filter(year=y)
     total_schools = School.objects.all()
+    special_schools = School.objects.filter(type='special')
+    data = []
+    for s in special_schools:
+        quantity_required = QuantityRequired.objects.get(school_id=s)
+        data.append({
+            'name': s.name,
+            'type': s.type,
+            'quantity_required': quantity_required.quantity,
+            'Mkoa': s.wilaya_id.mkoa_id.name,
+            'Wilaya': s.wilaya_id.name
+        })
     total_allocated = Student.objects.filter(Q(year=y) and Q(is_active=False))
     total_unallocated = Student.objects.filter(Q(year=y) and Q(is_active=True))
     context = {
         'total_student': str(len(total_student)),
         'total_schools': str(len(total_schools)),
         'total_allocated': str(len(total_allocated)),
-        'total_unallocated': str(len(total_unallocated))
+        'total_unallocated': str(len(total_unallocated)),
+        'special_schools': data
     }
     if request.user:
         return render(request, "admin_template/home_content.html", context)
@@ -106,13 +118,25 @@ def necta_home(request):
     y = Year.objects.get(id=current_year)
     total_student = Student.objects.filter(year=y)
     total_schools = School.objects.all()
+    special_schools = School.objects.filter(type='special')
+    data = []
+    for s in special_schools:
+        quantity_required = QuantityRequired.objects.get(school_id=s)
+        data.append({
+            'name': s.name,
+            'type': s.type,
+            'quantity_required': quantity_required.quantity,
+            'Mkoa': s.wilaya_id.mkoa_id.name,
+            'Wilaya': s.wilaya_id.name
+        })
     total_allocated = Student.objects.filter(Q(year=y) and Q(is_active=False))
     total_unallocated = Student.objects.filter(Q(year=y) and Q(is_active=True))
     context = {
         'total_student': str(len(total_student)),
         'total_schools': str(len(total_schools)),
         'total_allocated': str(len(total_allocated)),
-        'total_unallocated': str(len(total_unallocated))
+        'total_unallocated': str(len(total_unallocated)),
+        'special_schools': data
     }
     # context = {
     #     'total_student': '200',
@@ -199,8 +223,22 @@ def allocationYears(request):
 
 def insert_students(request):
     # pri
-    year = Year.objects.values('year').all()
-    context = {'years': year}
+    year = Year.objects.all()
+    y = []
+    for d in year:
+        print(year)
+        stu = Student.objects.filter(year=d)
+        # print(stu)
+        allocated = "No"
+        if len(stu) >= 1:
+            stSc = StudentSchool.objects.filter(student_id=stu[0])
+            if len(stSc)>=1:
+                allocated = "Yes"
+        data = {"year": d.year, "allocated": allocated}
+        y.append(data)
+
+    context = {"data": y}
+    print(context)
     if request.method != "POST":
         return render(request, "admin_template/add_studntsToallocate_template.html", context)
 
@@ -267,7 +305,10 @@ def insert_students_necta(request):
 
     else:
         # resultSheet = request.POST.get('resultSheet')
-        yr = Year.objects.get(year=request.POST['year'])
+        year = Year.objects.all()
+        x = [a.id for a in year]
+        new_year = max(x)+1
+        yr = Year.objects.get(year=new_year)
         csv_file = request.FILES.get('csv_file')
         try:
             # print(resultSheet)

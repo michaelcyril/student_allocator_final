@@ -73,7 +73,21 @@
                         <!-- /.card-body -->
 
                         <div class="card-footer">
+                            <div id="insert2">
                         <button type="submit" class="btn btn-primary">Add Students</button>
+
+                            </div>
+<!--                      <div id="insert">-->
+<!--                          <button class="btn btn-primary" type="button" disabled>-->
+<!--                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>-->
+<!--                      <span class="sr-only">Loading...</span>-->
+<!--                    </button>-->
+<!--                    <button class="btn btn-primary" type="button" disabled>-->
+<!--                      <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>-->
+<!--                      Inserting...-->
+<!--                    </button>-->
+<!--                      </div>-->
+
                         </div>
                     </form>
                     </div>
@@ -111,14 +125,6 @@
 }
 
 </style>
-
-<script>
-    window.addEventListener('load', function() {
-  var loadingSpinner = document.getElementById('loadingSpinner');
-  loadingSpinner.style.display = 'none';
-});
-
-</script>
 
 <div id="loadingSpinner">
   <img src="{% static 'loading-spinner.gif'  %}" alt="Loading Spinner">

@@ -80,6 +80,18 @@
 <!--                    -->
                     </div>
                     <!-- /.card -->
+                    <div class="card" style="width: 18rem;">
+                      <div class="card-header">
+                        <h4>Inserted students</h4>
+                      </div>
+                      <ul class="list-group list-group-flush">
+                          {% for row in data %}
+
+                        <li class="list-group-item">YEAR: {{ row.year }}      ALLOCATED: {{ row.allocated }}</li>
+                        <li class="list-group-item"></li>
+                            {% endfor %}
+                      </ul>
+                    </div>
 
                     <div class="col-3">
                         <a href="{% url 'app:perform_selection' %}">

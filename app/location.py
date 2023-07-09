@@ -120,7 +120,7 @@ def adminGetStudents(request, school_id):
     for g in d:
         stu = Student.objects.get(id=g['student_id'])
         if stu.year == yr:
-            some = {'id': stu.id, 'candidate_name': stu.candidate_name, 'candidate_number': stu.candidate_number, 'sex':stu.sex}
+            some = {'id': stu.id, 'candidate_name': stu.candidate_name, 'candidate_number': stu.candidate_number, 'sex':stu.sex, 'average_marks': stu.average_marks, 'average_grade': stu.average_grade}
             students.append(some)
         continue
     context = {"school": schooldata, "student":students}
