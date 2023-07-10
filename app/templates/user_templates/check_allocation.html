@@ -1,4 +1,4 @@
-{% extends 'user_templates/base_template.html' %}
+1{% extends 'user_templates/base_template.html' %}
 
 {% block page_title %}
     View Allocation
@@ -69,16 +69,16 @@
                         {% comment %} Displaying Students Here {% endcomment %}
 
                         <div class="card-footer">
-{% if data %}
-<div class="row">
-                <div class="col-md-12">
-                    <!-- general form elements -->
-                    <div class="card card-primary">
-<!--                    <div class="card-header">-->
-<!--                        <h3 class="card-title">Student Allocation</h3>-->
-<!--                    </div>-->
-<!--                    &lt;!&ndash; /.card-header &ndash;&gt;-->
-                    <!-- form start -->
+                    {% if data %}
+                    <div class="row">
+                    <div class="col-md-12">
+                        <!-- general form elements -->
+                        <div class="card card-primary">
+    <!--                    <div class="card-header">-->
+    <!--                        <h3 class="card-title">Student Allocation</h3>-->
+    <!--                    </div>-->
+    <!--                    &lt;!&ndash; /.card-header &ndash;&gt;-->
+                        <!-- form start -->
 
 
 
@@ -90,6 +90,12 @@
                                 <br/>
                                 <label>Candidate name :</label>
                                 <h4>{{data.student_id.candidate_name}}</h4>
+                                <br/>
+                                <label>Candidate region :</label>
+                                <h4>{{data.student_id.wilaya_id.name}}</h4>
+                                <br/>
+                                <label>Candidate district :</label>
+                                <h4>{{data.student_id.wilaya_id.mkoa_id.name}}</h4>
                                 <br/>
                                 <label>School being allocated :</label>
                                 <h4>{{data.school_id.name}}</h4>

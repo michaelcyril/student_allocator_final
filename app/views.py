@@ -80,9 +80,16 @@ def admin_home(request):
     print(request.user)
     year = Year.objects.all()
     x = [a.id for a in year]
-    current_year = max(x)
-    y = Year.objects.get(id=current_year)
-    total_student = Student.objects.filter(year=y)
+    try:
+        current_year = max(x)
+        y = Year.objects.get(id=current_year)
+        total_student = str(len(Student.objects.filter(year=y)))
+        total_allocated = str(len(Student.objects.filter(Q(year=y) and Q(is_active=False))))
+        total_unallocated = str(len(Student.objects.filter(Q(year=y) and Q(is_active=True))))
+    except:
+        total_student = '0'
+        total_allocated = '0'
+        total_unallocated = '0'
     total_schools = School.objects.all()
     special_schools = School.objects.filter(type='special')
     data = []
@@ -95,13 +102,11 @@ def admin_home(request):
             'Mkoa': s.wilaya_id.mkoa_id.name,
             'Wilaya': s.wilaya_id.name
         })
-    total_allocated = Student.objects.filter(Q(year=y) and Q(is_active=False))
-    total_unallocated = Student.objects.filter(Q(year=y) and Q(is_active=True))
     context = {
-        'total_student': str(len(total_student)),
+        'total_student': total_student,
         'total_schools': str(len(total_schools)),
-        'total_allocated': str(len(total_allocated)),
-        'total_unallocated': str(len(total_unallocated)),
+        'total_allocated': total_allocated,
+        'total_unallocated': total_unallocated,
         'special_schools': data
     }
     if request.user:
@@ -114,9 +119,16 @@ def necta_home(request):
     print(request.user)
     year = Year.objects.all()
     x = [a.id for a in year]
-    current_year = max(x)
-    y = Year.objects.get(id=current_year)
-    total_student = Student.objects.filter(year=y)
+    try:
+        current_year = max(x)
+        y = Year.objects.get(id=current_year)
+        total_student = str(len(Student.objects.filter(year=y)))
+        total_allocated = str(len(Student.objects.filter(Q(year=y) and Q(is_active=False))))
+        total_unallocated = str(len(Student.objects.filter(Q(year=y) and Q(is_active=True))))
+    except:
+        total_student = '0'
+        total_allocated = '0'
+        total_unallocated ='0'
     total_schools = School.objects.all()
     special_schools = School.objects.filter(type='special')
     data = []
@@ -129,13 +141,11 @@ def necta_home(request):
             'Mkoa': s.wilaya_id.mkoa_id.name,
             'Wilaya': s.wilaya_id.name
         })
-    total_allocated = Student.objects.filter(Q(year=y) and Q(is_active=False))
-    total_unallocated = Student.objects.filter(Q(year=y) and Q(is_active=True))
     context = {
-        'total_student': str(len(total_student)),
+        'total_student': total_student,
         'total_schools': str(len(total_schools)),
-        'total_allocated': str(len(total_allocated)),
-        'total_unallocated': str(len(total_unallocated)),
+        'total_allocated': total_allocated,
+        'total_unallocated': total_unallocated,
         'special_schools': data
     }
     # context = {
@@ -307,8 +317,13 @@ def insert_students_necta(request):
         # resultSheet = request.POST.get('resultSheet')
         year = Year.objects.all()
         x = [a.id for a in year]
-        new_year = max(x)+1
-        yr = Year.objects.get(year=new_year)
+        try:
+            new_year_id = max(x)+1
+            yr = Year.objects.get(id=new_year_id)
+        except:
+            new_year = '2023'
+            yr = Year.objects.create(year=new_year)
+
         csv_file = request.FILES.get('csv_file')
         try:
             # print(resultSheet)
@@ -615,16 +630,16 @@ def Selection(request):
     x = [a.id for a in year]
     current_year = max(x)
     y = Year.objects.get(id=current_year)
-    # try:
-    #     specialSchool(y)
-    # except:
-    #     print('special school error')
-    # print('special school done')
-    # try:
-    #     technicalSchool(y)
-    # except:
-    #     print('technical school error')
-    # print('technical school done')
+    try:
+        specialSchool(y)
+    except:
+        print('special school error')
+    print('special school done')
+    try:
+        technicalSchool(y)
+    except:
+        print('technical school error')
+    print('technical school done')
     try:
         wardSchool(y)
     except:

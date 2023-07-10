@@ -36,5 +36,5 @@ urlpatterns = [
     path('necta_home/', views.necta_home, name="necta_home"),
     path('allocate_students_necta/', views.insert_students_necta, name="allocate_students_necta"),
 
-    # path('demo', views.joke),
+    # path('demo', views.QuantifyStudent),
 ]
